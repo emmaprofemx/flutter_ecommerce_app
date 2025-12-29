@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ecommerce_app/src/presentation/pages/auth/login/LoginBlocCubit.dart';
 import 'package:flutter_ecommerce_app/src/presentation/pages/auth/login/LoginPage.dart';
 import 'package:flutter_ecommerce_app/src/presentation/pages/auth/register/RegisterPage.dart';
 
@@ -11,17 +13,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return BlocProvider(
+      create: (context) => LoginBlocCubit(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        initialRoute: 'login',
+        routes: {
+          'login': (BuildContext context) => LoginPage(),
+          'registrer': (BuildContext context) => Registerpage(),
+        },
       ),
-      initialRoute: 'login',
-      routes: {
-        'login': (BuildContext context) => LoginPage(),
-        'registrer': (BuildContext context) => Registerpage(),
-      },
     );
   }
 }

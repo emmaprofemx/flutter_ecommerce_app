@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ecommerce_app/src/presentation/pages/auth/login/LoginBlocCubit.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  LoginBlocCubit? _loginBlocCubit;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    _loginBlocCubit = BlocProvider.of<LoginBlocCubit>(context,listen: false);
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -32,32 +51,49 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
-  } //Fin de la clase build
-
+  } 
+ //Fin de la clase build
   Widget _txtCorreo() {
-    return TextField(
-      decoration: InputDecoration(
-        label: Text(
-          'Correo electronico',
-          style: TextStyle(color: Colors.white),
+    return StreamBuilder(
+      stream: _loginBlocCubit?.emailStrem,
+      builder: (context, snapshot) {
+        return TextField(
+        decoration: InputDecoration(
+          label: Text(
+            'Correo electronico',
+            style: TextStyle(color: Colors.white),
+          ),
+          prefixIcon: Icon(Icons.email, color: Colors.white),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
         ),
-        prefixIcon: Icon(Icons.email, color: Colors.white),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-      ),
+        onChanged: (text) {
+          _loginBlocCubit?.changeEmail(text);
+        },
+      );
+      },
     );
   }
 
   Widget _txtContra() {
-    return TextField(
-      decoration: InputDecoration(
+
+      return StreamBuilder(
+      stream: _loginBlocCubit?.emailStrem,
+      builder: (context, snapshot) {
+        return TextField(
+        decoration: InputDecoration(
         label: Text('Contraseña', style: TextStyle(color: Colors.white)),
         prefixIcon: Icon(Icons.lock, color: Colors.white),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.white),
         ),
       ),
+        onChanged: (text) {
+          _loginBlocCubit?.changePassword(text);
+        },
+      );
+      },
     );
   }
 
@@ -67,7 +103,9 @@ class LoginPage extends StatelessWidget {
       height: 60,
       margin: EdgeInsets.only(left: 25, right: 25, top: 25 , bottom: 15),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+            _loginBlocCubit?.login();
+        },
         child: Text('INICIAR SESION', style: TextStyle(color: Colors.black)),
         style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
       ),
