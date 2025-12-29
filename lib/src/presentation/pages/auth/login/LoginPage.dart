@@ -80,7 +80,9 @@ class LoginPage extends StatelessWidget {
       height: 60,
       margin: EdgeInsets.only(left: 25, right: 25, top: 15),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, 'registrer');
+        },
         child: Text('REGISTRATE', style: TextStyle(color: Colors.white)),
         style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
       ),
