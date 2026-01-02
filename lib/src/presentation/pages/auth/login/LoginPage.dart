@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce_app/src/presentation/pages/auth/login/LoginBlocCubit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,19 +11,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   LoginBlocCubit? _loginBlocCubit;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    WidgetsBinding.instance?.addPersistentFrameCallback((timeStamp) {
+      _loginBlocCubit?.dispose();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    _loginBlocCubit = BlocProvider.of<LoginBlocCubit>(context,listen: false);
+    _loginBlocCubit = BlocProvider.of<LoginBlocCubit>(context, listen: false);
 
     return Scaffold(
       body: Container(
@@ -51,48 +54,48 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  } 
- //Fin de la clase build
+  }
+
+  //Fin de la clase build
   Widget _txtCorreo() {
     return StreamBuilder(
       stream: _loginBlocCubit?.emailStrem,
       builder: (context, snapshot) {
         return TextField(
-        decoration: InputDecoration(
-          label: Text(
-            'Correo electronico',
-            style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            label: Text(
+              'Correo electronico',
+              style: TextStyle(color: Colors.white),
+            ),
+            prefixIcon: Icon(Icons.email, color: Colors.white),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
           ),
-          prefixIcon: Icon(Icons.email, color: Colors.white),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-          ),
-        ),
-        onChanged: (text) {
-          _loginBlocCubit?.changeEmail(text);
-        },
-      );
+          onChanged: (text) {
+            _loginBlocCubit?.changeEmail(text);
+          },
+        );
       },
     );
   }
 
   Widget _txtContra() {
-
-      return StreamBuilder(
+    return StreamBuilder(
       stream: _loginBlocCubit?.emailStrem,
       builder: (context, snapshot) {
         return TextField(
-        decoration: InputDecoration(
-        label: Text('Contraseña', style: TextStyle(color: Colors.white)),
-        prefixIcon: Icon(Icons.lock, color: Colors.white),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-      ),
-        onChanged: (text) {
-          _loginBlocCubit?.changePassword(text);
-        },
-      );
+          decoration: InputDecoration(
+            label: Text('Contraseña', style: TextStyle(color: Colors.white)),
+            prefixIcon: Icon(Icons.lock, color: Colors.white),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+          ),
+          onChanged: (text) {
+            _loginBlocCubit?.changePassword(text);
+          },
+        );
       },
     );
   }
@@ -101,13 +104,30 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 60,
-      margin: EdgeInsets.only(left: 25, right: 25, top: 25 , bottom: 15),
-      child: ElevatedButton(
-        onPressed: () {
-            _loginBlocCubit?.login();
+      margin: EdgeInsets.only(left: 25, right: 25, top: 25, bottom: 15),
+      child: StreamBuilder<bool>(
+        stream: _loginBlocCubit?.validateForm,
+        initialData: false,
+        builder: (context, snapshot) {
+          return ElevatedButton(
+            onPressed: () {
+              if (snapshot.data == true) {
+                _loginBlocCubit?.login();
+              } else {
+                Fluttertoast.showToast(
+                  msg: 'El formulario no es valido',
+                  toastLength: Toast.LENGTH_LONG,
+                );
+              }
+            },
+
+            child: const Text(
+              'INICIAR SESIÓN',
+              style: TextStyle(color: Colors.black),
+            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+          );
         },
-        child: Text('INICIAR SESION', style: TextStyle(color: Colors.black)),
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
       ),
     );
   }
